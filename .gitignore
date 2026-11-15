@@ -1,0 +1,8 @@
+.env
+build/
+build-*/
+*.log
+berichte/
+# Dateien, die Beispiele erzeugen
+verlauf.txt
+*.csv

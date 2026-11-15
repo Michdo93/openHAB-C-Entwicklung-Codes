@@ -1,0 +1,26 @@
+# Kapitel 19: Tests bei jedem Push – Unit-Tests, ein frisches openHAB mit der
+# Übungskonfiguration für die Integrationstests und valgrind für alle.
+name: Tests
+on: [push, pull_request]
+jobs:
+  ctest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Werkzeuge und Bibliotheken
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+             libcurl4-openssl-dev libcjson-dev libncurses-dev valgrind
+      - name: Übersetzen (holt c-openhab-rest-client und c-openhab-test-suite 2.0.0)
+        run: cmake -S . -B build && cmake --build build -j
+      - name: Unit-Tests
+        run: ctest --test-dir build -L unit --output-on-failure
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: openHAB mit der Übungskonfiguration
+        run: bash .github/openhab/start.sh
+        env:
+          OPENHAB_CONF: ${{ github.workspace }}/openhab-conf
+      - name: Integrationstests unter valgrind
+        run: ctest --test-dir build -T memcheck --output-on-failure
