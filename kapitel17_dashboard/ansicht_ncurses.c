@@ -61,6 +61,8 @@ int ansicht_ncurses(model* m, controller* c) {
             if (auswahl < n - 1) auswahl++;
             break;
         case '\n':
+        case '\r':
+        case KEY_ENTER:
             controller_umschalten(c, auswahl);
             break;
         case '+':
