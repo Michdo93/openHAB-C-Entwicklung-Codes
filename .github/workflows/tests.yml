@@ -21,6 +21,6 @@ jobs:
       - name: openHAB mit der Übungskonfiguration
         run: bash .github/openhab/start.sh
         env:
-          OPENHAB_CONF: ${{ github.workspace }}/openhab-conf
+          EXERCISE_CONF: ${{ github.workspace }}/openhab-conf
       - name: Integrationstests unter valgrind
         run: ctest --test-dir build -T memcheck --output-on-failure

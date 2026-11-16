@@ -9,8 +9,8 @@ curl -fsSL -o oh.zip "https://github.com/openhab/openhab-distro/releases/downloa
   || curl -fsSL -o oh.zip "https://openhab.jfrog.io/artifactory/libs-release/org/openhab/distro/openhab/$VERSION/openhab-$VERSION.zip"
 unzip -q oh.zip && rm oh.zip
 printf 'package = minimal\nbinding = astro\npersistence = rrd4j,inmemory\nui = basic\n' > conf/services/addons.cfg
-if [ -n "${OPENHAB_CONF:-}" ]; then
-  for d in items things rules sitemaps persistence; do cp -r "$OPENHAB_CONF/$d/." "conf/$d/"; done
+if [ -n "${EXERCISE_CONF:-}" ]; then
+  for d in items things rules sitemaps persistence; do cp -r "$EXERCISE_CONF/$d/." "conf/$d/"; done
 fi
 nohup ./start.sh server > openhab.out 2>&1 &
 for i in $(seq 1 120); do
@@ -26,7 +26,7 @@ done
 [ -n "$TOKEN" ]
 echo "::add-mask::$TOKEN"
 { echo "OPENHAB_URL=http://127.0.0.1:8080"; echo "OPENHAB_TOKEN=$TOKEN"; } >> "$GITHUB_ENV"
-if [ -n "${OPENHAB_CONF:-}" ]; then   # wait for the exercise configuration
+if [ -n "${EXERCISE_CONF:-}" ]; then   # wait for the exercise configuration
   for i in $(seq 1 60); do
     curl -s -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8080/rest/things/astro:sun:zuhause | grep -q ONLINE && break
     sleep 5
