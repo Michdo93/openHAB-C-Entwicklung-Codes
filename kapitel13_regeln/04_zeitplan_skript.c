@@ -84,9 +84,12 @@ int main(void) {
         *z = '\0';
         struct tm w = { 0 };
         strptime(datum, "%b %d, %Y, %I:%M:%S %p", &w);
+        w.tm_isdst = -1;
+        mktime(&w); // ergänzt den Wochentag (tm_wday)
+        static const char* TAG[] = {"So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"};
         char aus[32];
-        strftime(aus, sizeof aus, "%a %d.%m., %H:%M", &w);
-        printf("  %s  %s\n", aus, openhab_json_str(e, "rule.name"));
+        strftime(aus, sizeof aus, "%d.%m., %H:%M", &w);
+        printf("  %s %s  %s\n", TAG[w.tm_wday], aus, openhab_json_str(e, "rule.name"));
     }
     cJSON_Delete(plan);
 
