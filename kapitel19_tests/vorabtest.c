@@ -64,12 +64,13 @@ int main(void) {
         if (!openhab_sitemap_tester_doesSitemapContainItem(c, "restbuch",
                                                            AUF_DER_SITEMAP[i]))
             melde("nicht auf der Sitemap restbuch: ", AUF_DER_SITEMAP[i]);
-    if (!openhab_persistence_tester_isItemPersisted(c, "inmemory", "Wohnzimmer_Dimmer"))
-        melde("nicht in inmemory gespeichert: ", "Wohnzimmer_Dimmer");
     // Ein echter Funktionstest: Kommt ein Command an, und wird der Zustand gemeldet?
     if (!openhab_item_tester_testSwitch(c, "Wohnzimmer_Licht", "ON", .expectedState = "ON",
                                         .timeout = 5))
         melde("Command kommt nicht an: ", "Wohnzimmer_Licht");
+    // … und landet die Änderung im Persistenzdienst?
+    if (!openhab_persistence_tester_isItemPersisted(c, "inmemory", "Wohnzimmer_Licht"))
+        melde("nicht in inmemory gespeichert: ", "Wohnzimmer_Licht");
 
     printf("==================================================\n");
     if (!fehler)

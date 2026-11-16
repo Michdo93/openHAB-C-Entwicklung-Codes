@@ -31,4 +31,8 @@ if [ -n "${EXERCISE_CONF:-}" ]; then   # wait for the exercise configuration
     curl -s -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8080/rest/things/astro:sun:zuhause | grep -q ONLINE && break
     sleep 5
   done
+  # Diagnose im Log der Pipeline
+  curl -s -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8080/rest/things/astro:sun:zuhause/status; echo
+  curl -s -H "Authorization: Bearer $TOKEN" http://127.0.0.1:8080/rest/persistence; echo
+  grep -iE "error|warn" userdata/logs/openhab.log | tail -n 30 || true
 fi
